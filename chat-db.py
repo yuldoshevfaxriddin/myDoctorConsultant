@@ -63,10 +63,10 @@ def createTables():
         request_session VARCHAR(255),
         created_at VARCHAR(255)
         ); """)
-
+    
     print('tables created !')
 
-def userInsert(user:dict):
+def createUser(user:dict):
     sql_1 = f"""INSERT INTO users ( `name`, `username`, `password`, `created_at`) 
         VALUES ('{user['name']}','{user['username']}','{user['password']}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
     cursor.execute(sql_1)
@@ -76,10 +76,6 @@ def userInsert(user:dict):
     cursor.execute(sql_2)
     conn.commit()
     return cursor.lastrowid
-def updateUserSession(user):
-    sql = f"""UPDATE `sessions` SET `request_session`='{user['request_session']}',`created_at`='{datetime.datetime.timestamp(datetime.datetime.now())}' WHERE `user_id`={user['id']};"""
-    cursor.execute(sql)
-    conn.commit()
 def createPersonalChat(user_id_1,user_id_2):
     sql = f"""INSERT INTO personal_chat ( `user_1`, `user_2`, `created_at`) 
         VALUES ('{user_id_1}','{user_id_2}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
@@ -104,6 +100,16 @@ def createMessage(chat_id,user_id,message):
     cursor.execute(sql)
     conn.commit()
     return cursor.lastrowid
+def createSession(user_id,new_session):
+    sql = f"""INSERT INTO sessions ( `user_id`,`request_session`, `created_at`) 
+        VALUES ('{user_id}','{new_session}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
+    cursor.execute(sql)
+    conn.commit()
+    return cursor.lastrowid
+def updateUserSession(user):
+    sql = f"""UPDATE `sessions` SET `request_session`='{user['request_session']}',`created_at`='{datetime.datetime.timestamp(datetime.datetime.now())}' WHERE `user_id`={user['id']};"""
+    cursor.execute(sql)
+    conn.commit()
 
 def dbSeeder():
     createTables()
@@ -123,7 +129,7 @@ if __name__=='__main__':
     showTables()
     # dbSeeder()
     # dropTables()
-    # userInsert(user=user)
+    # createUser(user=user)
     # user['id'] = 16
     # user['request_session'] = 'salom'
     # updateUserSession(user)
