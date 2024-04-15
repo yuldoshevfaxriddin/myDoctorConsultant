@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Klean - Cleaning Services Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.min.css') }}">
+</head>
+
+<body>
+
+    <!-- Detail Start -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="mb-5">
+                        <h1 class="section-title mb-3">{{doctor['shior']}}</h1>
+                    </div>
+
+                    <div class="mb-5">
+                        <img class="img-fluid rounded w-100 mb-4" src="{{url_for('homePage')}}static/{{doctor['image']}}"
+                            alt="Image">
+                        <p>{{doctor['description']}}</p>
+                    </div>
+                    <a href="{{url_for('chat',doctorname=doctor['name'])}}">Chat: Shifokor bilan suhbatlashish</a>
+                    <p>Telefon raqam : +998 93 284 04 70</p>
+                    <p>Email: doctor@gmail.com</p>
+                    
+                </div>
+                <div class="col-lg-4 mt-5 mt-lg-0">
+                    <div class="d-flex flex-column text-center bg-secondary rounded mb-5 py-5 px-4">
+                        <img src="{{url_for('homePage')}}static/{{doctor['image']}}" class="img-fluid rounded-circle mx-auto mb-3" style="width: 100px;height:100px;background-size: cover;">
+                        <h3 class="text-white mb-3">{{doctor['name']}}</h3>
+                        <p class="text-white m-0">{{doctor['bio']}}</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="mb-4 section-title">Categorys</h3>
+                        <div class="d-flex flex-wrap m-n1">
+                            <!-- {% for i in range(10) %}
+                            <a href="{{url_for('categorysPage',category=i)}}" class="btn btn-outline-secondary m-1">Bolalar shifokori</a>
+                            {% endfor %} -->
+                            <a href="{{url_for('categorysPage',category='Bolalar shifokori')}}" class="btn btn-outline-secondary m-1">Bolalar shifokori</a>
+                            <a href="{{url_for('categorysPage',category='Pediatr')}}" class="btn btn-outline-secondary m-1">Pediatri</a>
+                            <a href="{{url_for('categorysPage',category='Stamatolog')}}" class="btn btn-outline-secondary m-1">Stamatolog</a>
+                            <a href="{{url_for('categorysPage',category='Lor')}}" class="btn btn-outline-secondary m-1">Lor</a>
+                            <a href="{{url_for('categorysPage',category='Artaped')}}" class="btn btn-outline-secondary m-1">Artaped</a>
+                            <a href="{{url_for('categorysPage',category='Jarroh')}}" class="btn btn-outline-secondary m-1">Jarroh</a>
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <h3 class="mb-4 section-title">Regions</h3>
+                        <div class="d-flex flex-wrap m-n1">
+                            <!-- {% for i in range(10) %}
+                            <a href="{{url_for('regionsPage',region=i)}}" class="btn btn-outline-secondary m-1">Toshkent</a>
+                            {% endfor %} -->
+                            <a href="{{url_for('regionsPage',region='Toshkent')}}" class="btn btn-outline-secondary m-1">Toshkent</a>
+                            <a href="{{url_for('regionsPage',region='Xorazm')}}" class="btn btn-outline-secondary m-1">Xorazm</a>
+                            <a href="{{url_for('regionsPage',region='Fargona')}}" class="btn btn-outline-secondary m-1">Fargona</a>
+                            <a href="{{url_for('regionsPage',region='Sirdaryo')}}" class="btn btn-outline-secondary m-1">Sirdaryo</a>
+                            <a href="{{url_for('regionsPage',region='Andijon')}}" class="btn btn-outline-secondary m-1">Andijon</a>
+                            <a href="{{url_for('regionsPage',region='namangan')}}" class="btn btn-outline-secondary m-1">Namangan</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Detail End -->
+
+</body>
+
+</html>

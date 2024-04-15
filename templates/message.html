@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="{{ url_for('static', filename='js/js.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/bootstrapt.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrapt.css') }}">
+    <title>Chat application</title>
+</head>
+
+<body>
+
+    
+    <p>{{doctor}}</p>
+    <p>{{session['user']}}</p>
+    <input type="text" id="username" value="{{doctor['name']}}">
+    <!-- <input type="text" id="username" > -->
+    <div class="messages">
+    </div>
+    <input placeholder="Message" id="messageInput" />
+
+    <script>
+        const socket = io();
+        let username = document.getElementById('username');
+        let messageContainer = document.querySelector(".messages");
+        
+        socket.on("connect", () => {
+            let p = document.createElement("p");
+            p.innerText = "You're connected";
+            messageContainer.appendChild(p);
+        })
+        let messsage = '';
+        let messageInput = document.getElementById("messageInput");
+        messageInput.addEventListener("keypress", (e) => {
+            if (e.which === 13) {
+                message = JSON.stringify({'username':username.value,'message':messageInput.value});
+                // message = JSON.stringify({'username':'test','message':messageInput.value});
+                socket.emit("message", message);
+                messageInput.value = "";
+            }
+        })
+
+        socket.on('message', (message) => {
+            message = JSON.parse(message);
+            console.log(message);
+            let messageElement = document.createElement("p");
+            messageElement.innerText = message['username']+'>> '+message['message'];
+            // messageElement.innerText = 'username: '+message['username']+'>> '+message['message'];
+            messageContainer.appendChild(messageElement);
+        })
+
+    </script>
+</body>
+
+</html>

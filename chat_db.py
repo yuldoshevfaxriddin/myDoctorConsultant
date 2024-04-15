@@ -71,11 +71,11 @@ def createUser(user:dict):
         VALUES ('{user['name']}','{user['username']}','{user['password']}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
     cursor.execute(sql_1)
     last_user_id = cursor.lastrowid
-    sql_2 = f"""INSERT INTO sessions ( `user_id`, `request_session`) 
-        VALUES ('{last_user_id}','{user['request_session']}')"""
-    cursor.execute(sql_2)
+    # sql_2 = f"""INSERT INTO sessions ( `user_id`, `request_session`) 
+    #     VALUES ('{last_user_id}','{user['request_session']}')"""
+    # cursor.execute(sql_2)
     conn.commit()
-    return cursor.lastrowid
+    return last_user_id
 def createPersonalChat(user_id_1,user_id_2):
     sql = f"""INSERT INTO personal_chat ( `user_1`, `user_2`, `created_at`) 
         VALUES ('{user_id_1}','{user_id_2}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
@@ -106,10 +106,43 @@ def createSession(user_id,new_session):
     cursor.execute(sql)
     conn.commit()
     return cursor.lastrowid
+
 def updateUserSession(user):
     sql = f"""UPDATE `sessions` SET `request_session`='{user['request_session']}',`created_at`='{datetime.datetime.timestamp(datetime.datetime.now())}' WHERE `user_id`={user['id']};"""
     cursor.execute(sql)
     conn.commit()
+    
+def checkUser(user_name,user_password,user_session=None):
+    sql = f"SELECT * FROM users WHERE `username`='{user_name}' AND `password`='{user_password}'"
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    if len(myresult) > 0:
+        user = {
+            'id':myresult[0][0],
+            'request_session':user_session
+        }
+    return myresult
+def checkUserSession(user):
+    sql = f"SELECT * FROM sessions WHERE `user_id`='{user['id']}'"
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    message = ''
+    if len(myresult) > 0:
+        updateUserSession(user)
+        message = 'session update'
+    else:
+        createSession(user['id'],user['request_session'])
+        message = 'session create'
+    return {'message':message,'status':myresult}
+
+def getPersonalChats(user_1):
+    sql = f"SELECT * FROM personal_chat WHERE `user_1`='{user_1}' OR `user_2`='{user_1}') "
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    print(myresult)
+    # updateUserSession(user)
+    return myresult
+
 
 def dbSeeder():
     createTables()
@@ -127,12 +160,14 @@ if __name__=='__main__':
     # user['request_session'] = 'abc12312sdfs'
 
     showTables()
-    # dbSeeder()
     # dropTables()
+    # dbSeeder()
     # createUser(user=user)
     # user['id'] = 16
     # user['request_session'] = 'salom'
     # updateUserSession(user)
     # creatPersonalChat(13,16)
     # createMultiChat(2,12)
-    createMessage(2,10,'salom dunyo hammaga !')
+    # createMessage(2,10,'salom dunyo hammaga !')
+    # print(checkUser('@tohir','toh123','salom_session'))
+    # showUsers()

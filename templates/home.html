@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>home</title>
+    
+    <script src="{{ url_for('static', filename='js/js.js') }}"></script>
+
+    <script>
+        const socket = io();
+        let username = document.getElementById('username');
+        let messageContainer = document.querySelector(".messages");
+        
+        socket.on("connect", () => {
+            let p = document.createElement("p");
+            p.innerText = "You're connected";
+            messageContainer.appendChild(p);
+        })
+        let messsage = '';
+        let messageInput = document.getElementById("messageInput");
+        messageInput.addEventListener("keypress", (e) => {
+            if (e.which === 13) {
+                message = JSON.stringify({'username':username.value,'message':messageInput.value});
+                // message = JSON.stringify({'username':'test','message':messageInput.value});
+                socket.emit("message", message);
+                messageInput.value = "";
+            }
+        })
+
+        socket.on('message', (message) => {
+            message = JSON.parse(message);
+            console.log(message);
+            let messageElement = document.createElement("p");
+            messageElement.innerText = message['username']+'>> '+message['message'];
+            // messageElement.innerText = 'username: '+message['username']+'>> '+message['message'];
+            messageContainer.appendChild(messageElement);
+        })
+
+    </script>
+
+
+
+</head>
+<body>
+    <p>{{ session }}</p>
+    <p>salom dunyo</p>
+</body>
+</html>
