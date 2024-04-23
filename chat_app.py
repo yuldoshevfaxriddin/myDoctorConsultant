@@ -18,14 +18,23 @@ def socketConnect():
     else:
         print('user not login')
     print(session)
-    
-# @socketio.on("message")
-# def sendMessage(message):
-#     print(request.sid,message)
-#     send(message, broadcast=True)
+     
+@socketio.on("sendMessage")
+def sendMessage(message):
+
+    # habarlarni yuborish
+    print(request.sid,message)
+    send(message, broadcast=True)
+
 
 @app.route('/')
 def home():
+    print('user' in session)
+    return  render_template('home.html')
+
+@app.route('/get-messages/<chat_id>')
+def getMessages(user_id):
+    chat_db.getPersonalChats(user=user_id)
     print('user' in session)
     return  render_template('home.html')
 
@@ -87,9 +96,16 @@ def logout():
     session.pop('user')
     return  'logout'
 
+@app.route('/message-page')
+def messagePage():
+    return render_template('message-test.html')
+
 @app.route('/create-personal-chat',methods=['POST'])
 def createChat():
-    pass
+    if request.method == 'POST' and 'user' in session:
+        
+        print()
+        
 
 if __name__=='__main__':
     # app.run(debug=False)

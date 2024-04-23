@@ -22,8 +22,6 @@ def dropTables():
     print('tables',table_list)
     for i in table_list:
         cursor.execute(f"DROP TABLE {i}")
-        # mycursor.execute(f"DROP TABLE region")
-
     print('dropping succes !')
 
 def createTables():
@@ -77,7 +75,7 @@ def createUser(user:dict):
     conn.commit()
     return last_user_id
 def createPersonalChat(user_id_1,user_id_2):
-    sql = f"""INSERT INTO personal_chat ( `user_1`, `user_2`, `created_at`) 
+    sql = f"""INSERT INTO personal_chat ( `user_1`, `user_2`,`messages`, `created_at`) 
         VALUES ('{user_id_1}','{user_id_2}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
     cursor.execute(sql)
     conn.commit()
@@ -135,8 +133,15 @@ def checkUserSession(user):
         message = 'session create'
     return {'message':message,'status':myresult}
 
-def getPersonalChats(user_1):
-    sql = f"SELECT * FROM personal_chat WHERE `user_1`='{user_1}' OR `user_2`='{user_1}') "
+def getPersonalChats(user):
+    sql = f"SELECT * FROM personal_chat WHERE `user_1`='{user['id']}' OR `user_2`='{user['id']}') "
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    print(myresult)
+    # updateUserSession(user)
+    return myresult
+def getPersonalChatsMessages(user):
+    sql = f"SELECT * FROM personal_chat WHERE `user_1`='{user['id']}' OR `user_2`='{user['id']}') "
     cursor.execute(sql)
     myresult = cursor.fetchall()
     print(myresult)
@@ -171,3 +176,4 @@ if __name__=='__main__':
     # createMessage(2,10,'salom dunyo hammaga !')
     # print(checkUser('@tohir','toh123','salom_session'))
     # showUsers()
+    
