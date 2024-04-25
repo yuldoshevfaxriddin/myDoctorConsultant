@@ -32,15 +32,19 @@ var BOT_NAME = activeUserChat.children[1].children[0].textContent;
 var PERSON_NAME = mainUser.children[1].children[0].textContent;
 
 msgerForm.addEventListener("submit", event => {
-  sendMessage();
-    // serverga malumot yuborilsin
+  // serverga malumot yuborilsin
     event.preventDefault();
-  const msgText = msgerInput.value;
-  if (!msgText) return;
+    const msgText = msgerInput.value;
+    if (!msgText) return;
 
-  appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
+    var user_id_1 = active_chat_id.value; // client 
+    var user_id_2 = userId.value; // current user
+    var text = msgText;
+    sendMessage(user_id_1,user_id_2,text);
+  var time = new Date();
+  appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText, time);
   msgerInput.value = "";
-  botResponse();
+  // botResponse();
 });
 /*
 get("html").addEventListener("click",()=>{
@@ -65,7 +69,7 @@ configButton.addEventListener("click",() =>{
 
 function appendMessage(name, img, side, text, time) {
   // var date = formatDate(new Date());
-  var date = time;
+  var date = formatDate(time);
   //   Simple solution for small apps
   const msgHTML = `
     <div class="msg ${side}-msg">
@@ -113,9 +117,28 @@ function random(min, max) {
 
 function selectUser(){
   var id = this.event.srcElement.id;
+  if(id==active_chat_id.value){
+    return 
+  }
   deleteMsgerChat();
   setUserChat(id);
-  var data = getMessages(active_chat_id);
+  var user_1 = active_chat_id.value;
+  var user_2 = userId.value;
+  var data = '';
+  var request = "/get-messages?user_1="+user_1+"&user_2="+user_2;
+  console.log(request);
+  // var request = "/get-messages?user_1=4&user_2=3";
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+      var respons = JSON.parse(this.responseText);
+      data = respons;
+  }
+  };
+  xhttp.open("GET", request,false);
+  xhttp.send();
+
+  console.log(data);
   setMessageChat(data);
 }
 
@@ -159,23 +182,32 @@ function deleteMsgerChat(){
     msgerChat.removeChild(msgerChat.lastChild);
   }
 }
-
 function setMessageChat(data){
   // habarlarni joylashtirish
+  console.log(data.length);
+//  globaldata = data;
   for(var i=0;data.length;i++){
     
-    var chat_id = data[i]['chat_id'];
-    var name = data[i]['username'];
-    var image = data[i]['image'];
-    var time = data[i]['time'];
-    var msgText = data[i]['text'];
-    if (data[i]['user_id']==userId){
-      appendMessage(BOT_NAME, BOT_IMG, "right", msgText,time);
+    var chat_id = data[i][1]; //chat id
+    var user_id = data[i][2]; //user id
+    var username ;
+    var image ;
+    var time = new Date(1000 * data[i][4]);
+    var msgText = data[i][3];
+    if (user_id==userId.value){
+      username = document.getElementById('user_id').parentElement.children[0].textContent;
+      image = document.getElementById('user_id').parentElement.parentElement.children[0].children[0].src;
+      appendMessage(username, image, "right", msgText,time);
     }
     else{
-      appendMessage(BOT_NAME, BOT_IMG, "left", msgText,time);
+      var username = document.getElementById(user_id).children[1].children[0].textContent;
+      var image = document.getElementById(user_id).children[0].children[0].src;
+      appendMessage(username, image, "left", msgText,time);
     }
   }
 
+}
+
+function getMessages(user_1,user_2){
 }
 

@@ -1,5 +1,7 @@
 from flask import Flask,session,render_template,request,url_for,redirect
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
+import datetime
+import json
 import chat_db
 
 app = Flask(__name__)
@@ -21,22 +23,40 @@ def socketConnect():
      
 @socketio.on("sendMessage")
 def sendMessage(message):
-
+    print(message)
+    data = json.loads(message)
+    user_id_1 = data['user_id_1'] # client 
+    user_id_2 = data['user_id_2'] # current user
+    text = data['text']
+    # data['user_1'] = chat_db.getUser(user_id_1)[0]
+    # data['user_2'] = chat_db.getUser(user_id_2)[0]
+    data['time'] = datetime.datetime.timestamp(datetime.datetime.now())
+    chat_info = chat_db.checkPersonalChat(user_id_1,user_id_2)[0]
+    chat_id = chat_info[0]
+    chat_db.insertPersonalMessage(chat_id,user_id_2,text)
+    print("chat insert yakunlandi")
+    user_request_id = chat_db.getUserRequestId(user_id_1)
+    print(user_request_id)
     # habarlarni yuborish
-    print(request.sid,message)
-    send(message, broadcast=True)
-
+    # print(request.sid,message)
+    print(user_request_id,chat_info)
+    # send(message, broadcast=True,to=user_request_id)
+    emit('sendMessage',json.dumps(data), broadcast=True,to=user_request_id)
 
 @app.route('/')
 def home():
     print('user' in session)
     return  render_template('home.html')
 
-@app.route('/get-messages/<chat_id>')
-def getMessages(user_id):
-    chat_db.getPersonalChats(user=user_id)
-    print('user' in session)
-    return  render_template('home.html')
+@app.route('/get-messages')
+def getMessages():
+    user_1 = request.args.get('user_1')
+    user_2 = request.args.get('user_2')
+    print(user_1,request.form)
+    chat_id = chat_db.checkPersonalChat(user_1,user_2)[0][0]
+    data = chat_db.getPersonalChatsMessages(chat_id)
+    print('data',data)
+    return json.dumps(data)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -50,17 +70,20 @@ def login():
             'username':'admin',
             'password':'password'
         }
+        print(username,password)
         check_user = chat_db.checkUser(username,password)
+        print('chekuser',check_user)
         if len(check_user)==1:
-            print(check_user[0])
+            check_user = check_user[0]
+            print(check_user)
             if check_user[2]== username and check_user[3]==password:
                 print('login succes')
                 current_user = {
-                    'name':check_user[0][1],
+                    'name':check_user[1],
                     'username':username,
                     'password':password,
-                    'id': check_user[0][0],
-                    'created_at':check_user[0][4]
+                    'id': check_user[0],
+                    'created_at':check_user[4]
                 }
                 session['user'] = current_user
                 return redirect(url_for('home'))
@@ -82,12 +105,15 @@ def register():
         user = {
             'name':name,
             'username':username,
-            'password':password
+            'password':password,
+            'user_bio':'Tizim foydalanuvchisi',
+            'user_image':'images/default-person.png'
         }
         user['id'] = chat_db.createUser(user)
         print(user)
         print('register  succes !')
         session['user'] = user
+        # users = chat_db.getAllUsers()
         return redirect(url_for('home'))
     return  render_template('register.html')
 
@@ -98,7 +124,9 @@ def logout():
 
 @app.route('/message-page')
 def messagePage():
-    return render_template('message-test.html')
+    users = chat_db.getAllUsers()
+    user = session['user']
+    return render_template('message-test.html',users=users,current_user=user)
 
 @app.route('/create-personal-chat',methods=['POST'])
 def createChat():

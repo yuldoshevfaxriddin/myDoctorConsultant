@@ -4,33 +4,26 @@ socket.on("connect", () => {
     console.log("You're connected");
 })
 
-function sendMessage(chat_id,data){
-    var message = JSON.stringify({'chat_id':chat_id,'message':data});
+function sendMessage(user_id_1,user_id_2,text){
+    var data = {user_id_1:user_id_1, user_id_2:user_id_2, text:text};
+    var message = JSON.stringify(data);
     // message = JSON.stringify({'username':'test','message':messageInput.value});
-    socket.emit("message", message);
+    socket.emit("sendMessage", message);
+    // alert("bahar ketdi");
 }
 
-socket.on('message', (message) => {
-    message = JSON.parse(message);
-    if(chat_id==active_chat_id){
-        var chat_id = message['chat_id'];
-        var name = message['username'];
-        var image = message['image'];
-        var msgText = message['text'];
-        appendMessage(name, image, "left", msgText);    
-    }
-    alert('ok !');
+socket.on('sendMessage', (message) => {
+    
+    // alert("habar keldi qara"); 
+       var data = JSON.parse(message);
+       var user_id_1 = data['user_id_2']; // client 
+    var user_id_2 = data['user_id_1']; // current user
+    var text = data['text'];
+    var time = new Date(1000 * data['time'])
+    console.log(data);
+    var name = document.getElementById(user_id_1).children[1].children[0].textContent; //chatni egasi
+    var image = document.getElementById(user_id_1).children[0].children[0].src; // chatni egasi
+    appendMessage(name, image, "left", text,time); 
+    console.log("ok ");  
+
 })
-
-function getMessages(chat_id){
-    var request = "/get-data/"+chat_id;
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        var respons = JSON.parse(this.responseText);
-        return respons;
-    }
-    };
-    xhttp.open("GET", request,false);
-    xhttp.send();
-}
