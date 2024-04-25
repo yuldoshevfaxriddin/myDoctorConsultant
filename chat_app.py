@@ -48,6 +48,36 @@ def home():
     print('user' in session)
     return  render_template('home.html')
 
+@app.route('/about')
+def about():
+    return  render_template('about.html')
+
+@app.route('/services')
+def services():
+    return  render_template('services.html')
+
+@app.route('/news')
+def news():
+    return  render_template('news.html')
+
+@app.route('/contact')
+def contact():
+    return  render_template('contact.html')
+
+@app.route('/open-chat')
+def openChat():
+    return  "open chat"
+
+@app.route('/doctors')
+def doctors():
+    return  render_template('doctors.html')
+
+@app.route('/doctor/<doctor>')
+def doctorProfile(doctor):
+    print(doctor)
+    return  render_template('doctor/profile.html')
+
+
 @app.route('/get-messages')
 def getMessages():
     user_1 = request.args.get('user_1')
