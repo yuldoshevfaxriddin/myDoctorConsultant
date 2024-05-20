@@ -13,7 +13,6 @@ function sendMessage(user_id_1,user_id_2,text){
 }
 
 socket.on('sendMessage', (message) => {
-    
     // alert("habar keldi qara"); 
        var data = JSON.parse(message);
        var user_id_1 = data['user_id_2']; // client 
@@ -21,9 +20,16 @@ socket.on('sendMessage', (message) => {
     var text = data['text'];
     var time = new Date(1000 * data['time'])
     console.log(data);
-    var name = document.getElementById(user_id_1).children[1].children[0].textContent; //chatni egasi
-    var image = document.getElementById(user_id_1).children[0].children[0].src; // chatni egasi
-    appendMessage(name, image, "left", text,time); 
+    if(document.getElementById(user_id_1) == null){
+        appendUsersList(data);
+        // user yoq uni yaratish kerak
+    }else{
+        if(active_user == user_id_1){
+            var name = document.getElementById(user_id_1).children[1].children[0].textContent; //chatni egasi
+            var image = document.getElementById(user_id_1).children[0].children[0].src; // chatni egasi
+            appendMessage(name, image, "left", text,time); 
+        }
+    }
     console.log("ok ");  
 
 })

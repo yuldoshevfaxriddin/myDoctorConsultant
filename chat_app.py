@@ -1,11 +1,12 @@
 from flask import Flask,session,render_template,request,url_for,redirect
 from flask_socketio import SocketIO, send, emit
 import datetime
+import settings
 import json
 import chat_db
 
 app = Flask(__name__)
-app.secret_key='Faxriddin Yuldoshev'
+app.secret_key=settings.SECRET_KEY
 socketio = SocketIO(app, cors_allowed_origins="*",)
 
 @socketio.on('connect')
@@ -28,8 +29,12 @@ def sendMessage(message):
     user_id_1 = data['user_id_1'] # client 
     user_id_2 = data['user_id_2'] # current user
     text = data['text']
-    # data['user_1'] = chat_db.getUser(user_id_1)[0]
-    # data['user_2'] = chat_db.getUser(user_id_2)[0]
+    data['user_img_1'] = chat_db.getUser(user_id=user_id_1)[0][4]
+    data['user_img_2'] = chat_db.getUser(user_id=user_id_2)[0][4]
+    data['user_name_1'] = chat_db.getUser(user_id=user_id_1)[0][1]
+    data['user_name_2'] = chat_db.getUser(user_id=user_id_2)[0][1]
+    data['user_bio_1'] = chat_db.getUser(user_id=user_id_1)[0][5]
+    data['user_bio_2'] = chat_db.getUser(user_id=user_id_2)[0][5]
     data['time'] = datetime.datetime.timestamp(datetime.datetime.now())
     chat_info = chat_db.checkPersonalChat(user_id_1,user_id_2)[0]
     chat_id = chat_info[0]
@@ -64,25 +69,27 @@ def news():
 def contact():
     return  render_template('contact.html')
 
-@app.route('/open-chat')
-def openChat():
-    return  "open chat"
-
 @app.route('/doctors')
 def doctors():
-    return  render_template('doctors.html')
+    doctors = chat_db.getDoctors()
+    return  render_template('doctors.html',doctors=doctors)
 
-@app.route('/doctor/<doctor>')
-def doctorProfile(doctor):
-    print(doctor)
-    return  render_template('doctor/profile.html')
+@app.route('/doctor/<doctor_id>')
+def doctorProfile(doctor_id):
+    respons = chat_db.getUser(doctor_id)
+    if len(respons)==0:
+        return redirect(url_for('doctors'))
+    doctor = respons[0]
+    role_key = 'doctor'
+    if doctor[6] != role_key:
+        return  redirect(url_for('doctors'))
+    return  render_template('doctor/profile.html',doctor=doctor)
 
 
 @app.route('/get-messages')
 def getMessages():
     user_1 = request.args.get('user_1')
     user_2 = request.args.get('user_2')
-    print(user_1,request.form)
     chat_id = chat_db.checkPersonalChat(user_1,user_2)[0][0]
     data = chat_db.getPersonalChatsMessages(chat_id)
     print('data',data)
@@ -91,15 +98,12 @@ def getMessages():
 @app.route('/login',methods=['GET','POST'])
 def login():
     print(session)
-    if 'user' in session:
+    if 'user' in session: 
         return redirect(url_for('home'))
     if request.method == 'POST':
         username = request.form.get('username',None)
         password = request.form.get('password',None)
-        user = {
-            'username':'admin',
-            'password':'password'
-        }
+
         print(username,password)
         check_user = chat_db.checkUser(username,password)
         print('chekuser',check_user)
@@ -113,9 +117,17 @@ def login():
                     'username':username,
                     'password':password,
                     'id': check_user[0],
-                    'created_at':check_user[4]
+                    'created_at':check_user[7],
+                    'user_role':check_user[6],
+                    'user_bio':check_user[5],
+                    'user_image':check_user[4]
                 }
+                session['status'] = 'Tizimga kirildi'
                 session['user'] = current_user
+                if 'nextUrl' in session:
+                    nextUrl = session['nextUrl']
+                    session.pop('nextUrl')
+                    return redirect(nextUrl)
                 return redirect(url_for('home'))
         print('not login')
     return render_template('login.html')
@@ -150,13 +162,23 @@ def register():
 @app.route('/logout')
 def logout():
     session.pop('user')
-    return  'logout'
+    return  redirect(url_for('home'))
 
 @app.route('/message-page')
 def messagePage():
-    users = chat_db.getAllUsers()
+    # status = session['status'] if 'status' in session else None 
+    status = None
+    if 'status' in session:
+        status = session['status']
+        session.pop('status')
+    if 'user' not in session:
+        session['nextUrl'] = url_for('messagePage')
+        return redirect(url_for('login'))
     user = session['user']
-    return render_template('message-test.html',users=users,current_user=user)
+    # users = chat_db.getPersonalChats(user)
+    users = chat_db.getAllUsers()
+    print('salom',users)
+    return render_template('message-test.html',users=users,current_user=user,status=status)
 
 @app.route('/create-personal-chat',methods=['POST'])
 def createChat():
@@ -167,4 +189,4 @@ def createChat():
 
 if __name__=='__main__':
     # app.run(debug=False)
-    socketio.run(app,host='localhost',debug=True)
+    socketio.run(app=app,host=settings.HOST_SERVER,debug=settings.DEBUG,port=settings.PORT)

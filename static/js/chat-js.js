@@ -3,12 +3,16 @@ const msgerForm = get(".msger-inputarea");
 const msgerInput = get(".msger-input");
 const msgerChat = get(".msger-chat");
 const configButton = get(".msger-header-options");
+const searchButton = get(".msger-header-options-2");
 const activeUserChat = get(".user-chat-info");
 const mainUser = get(".user-info");
+const usersList = get(".users-list");
 
+var searchInput = document.getElementById("search-button");
 const userId = document.getElementById("user_id");;
 
 var nextConfigButton = true;
+var nextSearchButton = true;
 
 var active_user = -1;
 var active_chat_id = document.getElementById("chat_id");
@@ -64,7 +68,20 @@ configButton.addEventListener("click",() =>{
     get(".config-button").style.display= "none";
   }
   nextConfigButton = ! nextConfigButton;
-  // alert(get(".config-button").style.);
+
+});
+
+searchButton.addEventListener("click",() =>{
+  if(nextSearchButton === true){
+    searchButton.classList.add("active-button");
+    get(".search-button").style.display= "block";
+    searchInput.focus();
+  }
+  else{
+    searchButton.classList.remove("active-button");
+    get(".search-button").style.display= "none";
+  }
+  nextSearchButton = ! nextSearchButton;
 });
 
 function appendMessage(name, img, side, text, time) {
@@ -115,8 +132,9 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-function selectUser(){
-  var id = this.event.srcElement.id;
+function selectUser(id){
+  // var id = this.event.srcElement.id;
+  console.log(id);
   if(id==active_chat_id.value){
     return 
   }
@@ -186,9 +204,9 @@ function setMessageChat(data){
   // habarlarni joylashtirish
   console.log(data.length);
 //  globaldata = data;
-  for(var i=0;data.length;i++){
+  for(let i=0;data.length;i++){
     
-    var chat_id = data[i][1]; //chat id
+    // var chat_id = data[i][1]; //chat id
     var user_id = data[i][2]; //user id
     var username ;
     var image ;
@@ -206,6 +224,32 @@ function setMessageChat(data){
     }
   }
 
+}
+
+function appendUsersList(data){
+  let new_user_name = data['user_name_2']; // client 
+  let new_user_bio = data['user_bio_2'];
+  let new_user_img = data['user_img_2'];
+  let new_user_id = data['user_id_2'];
+  let new_message =  data['text'];
+  let time = new Date(1000 * data['time'])
+  setTestUser(new_user_id,new_user_name,new_user_bio,new_user_img);
+}
+
+function setTestUser(id,name,bio,img){
+  const userHTML = `
+    <div class="user-chat"  id="${id}" onclick="selectUser('${id}')">
+            <div class="user-img">
+              <img src="${'static/'+img}"alt="">
+            </div>
+            <div class="user-name">
+              <h3>${name} </h3>
+              <p>${bio}</p>
+            </div>
+          </div>
+  `;
+  usersList.insertAdjacentHTML("beforeend", userHTML);
+  // usersList.scrollTop += 500;
 }
 
 function getMessages(user_1,user_2){

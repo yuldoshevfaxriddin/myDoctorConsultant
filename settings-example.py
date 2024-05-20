@@ -2,3 +2,9 @@ DB_HOSTNAME = 'HOSTNAME'
 DB_USERNAME = 'USERNAME'
 DB_PASSWORD = 'PASSWORD'
 DB_NAME ='DB_NAME'
+
+HOST_SERVER = 'localhost'
+PORT = 5000
+
+SECRET_KEY = 'yuldoshev faxriddin'
+DEBUG = True

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Bosh sahifa</title>
+	{% if doctor %}
+		<title>{{doctor[1]}} {{doctor[5]}}</title>
+	{% endif %}
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="CareMed demo project">
@@ -32,7 +34,7 @@
 							<nav class="main_nav ml-auto">
 								<ul>
 									<li><a href="{{url_for('home')}}">Asosiy sahifa</a></li>
-									<li><a href="{{url_for('openChat')}}">Ochiq Muloqot</a></li>
+									<li><a href="{{url_for('messagePage')}}">Muloqot</a></li>
 									<li><a href="{{url_for('doctors')}}">Shifokorlar</a></li>
 									<li><a href="{{url_for('services')}}">Hizmatlar</a></li>
 									<li><a href="{{url_for('news')}}">Yangililar</a></li>
@@ -88,7 +90,7 @@
 				<!-- About Content -->
 				<div class="col-lg-7">
 					<div class="about_content">
-						<div class="section_title"><h2>A great medical team to help your needs</h2></div>
+						<div class="section_title"><h2>{{doctor[1]}} {{doctor[5]}}</h2></div>
 						<div class="about_text">
 							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ante leo, finibus quis est ut, tempor tincidunt ipsum. Nam consequat semper sollicitudin. Aliquam nec dapibus massa. Pellen tesque in luctus ex. Praesent luctus erat sit amet tortor aliquam bibendum. Nulla ut molestie augue, scelerisque consectetur quam. Dolor sit amet, consectetur adipiscing elit. Cura bitur ante leo, finibus quis est ut, tempor tincidunt ipsum. Nam consequat semper sollicitudin. Aliquam nec dapibus massa. Pellentesque in luctus ex.</p>
 						</div>
@@ -100,99 +102,9 @@
 
 				<!-- About Image -->
 				<div class="col-lg-5">
-					<div class="about_image"><img src="{{ url_for('static', filename='images/site-images/about.png') }}" alt=""></div>
+					<div class="about_image"><img style="width: 246px;height: 320;" src="{{ url_for('static', filename=doctor[4]) }}"alt=""></div>
+					<!-- <div class="about_image"><img src="{{ url_for('static', filename='images/site-images/about.png') }}" alt=""></div> -->
 				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Departments -->
-
-	<div class="departments">
-		<div class="departments_background parallax-window" data-parallax="scroll" data-image-src="{{ url_for('static', filename='images/site-images/departments.jpg') }}" data-speed="0.8"></div>
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<div class="section_title section_title_light"><h2>Our Medical Departments</h2></div>
-				</div>
-			</div>
-			<div class="row departments_row row-md-eq-height">
-
-				<!-- Department -->
-				<div class="col-lg-3 col-md-6 dept_col">
-                    <a href="#">
-					<div class="dept">
-						<div class="dept_image"><img src="{{ url_for('static', filename='images/site-images/dept_1.jpg') }}" alt=""></div>
-						<div class="dept_content text-center">
-							<div class="dept_title">plastic surgery</div>
-							<div class="dept_subtitle">Dr. James Smith</div>
-						</div>
-					</div>
-                </a>
-				</div>
-
-				<!-- Department -->
-				<div class="col-lg-3 col-md-6 dept_col">
-                    <a href="#">
-					<div class="dept">
-						<div class="dept_image"><img src="{{ url_for('static', filename='images/site-images/dept_2.jpg') }}" alt=""></div>
-						<div class="dept_content text-center">
-							<div class="dept_title">gastroenterology</div>
-							<div class="dept_subtitle">Dr. Gunter Roscoe</div>
-						</div>
-					</div>
-                    </a>
-				</div>
-
-				<!-- Department -->
-				<div class="col-lg-3 col-md-6 dept_col">
-                    <a href="#">
-					<div class="dept">
-						<div class="dept_image"><img src="{{ url_for('static', filename='images/site-images/dept_3.jpg') }}" alt=""></div>
-						<div class="dept_content text-center">
-							<div class="dept_title">dentistry</div>
-							<div class="dept_subtitle">Dr. Maria Williams</div>
-						</div>
-					</div>
-                    </a>
-				</div>
-
-                <!-- Department -->
-				<div class="col-lg-3 col-md-6 dept_col">
-					<div class="dept">
-						<div class="dept_image"><img src="{{ url_for('static', filename='images/site-images/dept_3.jpg') }}" alt=""></div>
-						<div class="dept_content text-center">
-							<div class="dept_title">dentistry</div>
-							<div class="dept_subtitle">Dr. Maria Williams</div>
-						</div>
-					</div>
-				</div>
-                    
-                <!-- Department -->
-				<div class="col-lg-3 col-md-6 dept_col">
-					<div class="dept">
-						<div class="dept_image"><img src="{{ url_for('static', filename='images/site-images/dept_3.jpg') }}" alt=""></div>
-						<div class="dept_content text-center">
-							<div class="dept_title">dentistry</div>
-							<div class="dept_subtitle">Dr. Maria Williams</div>
-						</div>
-					</div>
-				</div>
-                
-
-                    <!-- Department -->
-				<div class="col-lg-3 col-md-6 dept_col">
-                    <div class="dept">
-                        <div class="dept_image"><img src="{{ url_for('static', filename='images/site-images/dept_3.jpg') }}" alt=""></div>
-						<div class="dept_content text-center">
-                            <div class="dept_title">dentistry</div>
-							<div class="dept_subtitle">Dr. Maria Williams</div>
-						</div>
-					</div>
-				</div>
-            
-
-				
 			</div>
 		</div>
 	</div>

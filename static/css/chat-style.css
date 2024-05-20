@@ -244,10 +244,23 @@
     border-radius: 8px 8px 0px 0px;
     background-color: #579ffb;
   }
+  .msger-header-options-2{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px 8px 0px 0px;
+    background-color: #579ffb;
+  }
   .active-button{
     background-color: rgb(12, 12, 118);
   }
   .active-button:hover,.msger-header-options:hover {
+    background-color: rgb(12, 12, 118);
+  }
+  .active-button:hover,.msger-header-options-2:hover {
     background-color: rgb(12, 12, 118);
   }
   .config-button{
@@ -268,6 +281,30 @@
     display: block;
   }
   .config-button a:hover{
+  background-color: #579ffb;
+  padding: 2px;
+  border-radius: 4px;
+  color: red;
+  text-decoration: underline;
+  }
+  
+  .search-button{
+    display: none;
+    position: absolute;
+    top:  50px;
+    right: 0px;
+    width: 200px;
+    padding: 5px;
+    border-radius: 8px 0px 8px 8px;
+  }
+  .search-button a{
+    text-decoration:none;
+    font-size: 14px;
+    color: white;
+    margin: 2px;
+    display: block;
+  }
+  .search-button a:hover{
   background-color: #579ffb;
   padding: 2px;
   border-radius: 4px;
