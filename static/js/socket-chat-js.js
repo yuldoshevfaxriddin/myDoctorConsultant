@@ -19,8 +19,13 @@ socket.on('sendMessage', (message) => {
     var user_id_2 = data['user_id_1']; // current user
     var text = data['text'];
     var time = new Date(1000 * data['time'])
-    console.log(data);
+    console.log(user_id_1 != active_user);
+    if(user_id_1 != active_user){
+        playNotification();
+    }
     if(document.getElementById(user_id_1) == null){
+        console.log("if ishladi socketdagi");
+        console.log(data);
         appendUsersList(data);
         // user yoq uni yaratish kerak
     }else{

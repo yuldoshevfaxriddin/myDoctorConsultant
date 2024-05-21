@@ -175,10 +175,27 @@ def messagePage():
         session['nextUrl'] = url_for('messagePage')
         return redirect(url_for('login'))
     user = session['user']
-    # users = chat_db.getPersonalChats(user)
-    users = chat_db.getAllUsers()
-    print('salom',users)
-    return render_template('message-test.html',users=users,current_user=user,status=status)
+    users = chat_db.getPersonalChats(user)
+    doctor = None
+    # users = chat_db.getAllUsers()
+    return render_template('message-test.html',users=users,current_user=user,status=status,client_doctor=doctor)
+@app.route('/message-page/<id>/')
+def messagePage_2(id):
+    # status = session['status'] if 'status' in session else None 
+    status = None
+    if 'status' in session:
+        status = session['status']
+        session.pop('status')
+    if 'user' not in session:
+        session['nextUrl'] = url_for('messagePage_2',id=id)
+        return redirect(url_for('login'))
+    user = session['user']
+    users = chat_db.getPersonalChats(user)
+    doctor = None
+    if id :
+        doctor = chat_db.getUser(id)[0]
+    # users = chat_db.getAllUsers()
+    return render_template('message-test.html',users=users,current_user=user,status=status,client_doctor=doctor)
 
 @app.route('/create-personal-chat',methods=['POST'])
 def createChat():

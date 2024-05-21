@@ -247,7 +247,7 @@ def dbSeeder():
         createChat(chat_name)
     user1 = {
             'name':'Asadbek Bobojovov',
-            'username':'asabdek123',
+            'username':'asadbek123',
             'password':'asadbek',
             'user_bio':'Tizim foydalanuvchisi',
             'user_role':'bemor',

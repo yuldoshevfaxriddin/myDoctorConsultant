@@ -9,7 +9,7 @@ const mainUser = get(".user-info");
 const usersList = get(".users-list");
 
 var searchInput = document.getElementById("search-button");
-const userId = document.getElementById("user_id");;
+const userId = document.getElementById("user_id");
 
 var nextConfigButton = true;
 var nextSearchButton = true;
@@ -229,7 +229,7 @@ function setMessageChat(data){
 function appendUsersList(data){
   let new_user_name = data['user_name_2']; // client 
   let new_user_bio = data['user_bio_2'];
-  let new_user_img = data['user_img_2'];
+  let new_user_img = '/static/'+data['user_img_2'];
   let new_user_id = data['user_id_2'];
   let new_message =  data['text'];
   let time = new Date(1000 * data['time'])
@@ -240,7 +240,7 @@ function setTestUser(id,name,bio,img){
   const userHTML = `
     <div class="user-chat"  id="${id}" onclick="selectUser('${id}')">
             <div class="user-img">
-              <img src="${'static/'+img}"alt="">
+              <img src="${img}"alt="">
             </div>
             <div class="user-name">
               <h3>${name} </h3>
@@ -255,3 +255,9 @@ function setTestUser(id,name,bio,img){
 function getMessages(user_1,user_2){
 }
 
+function playNotification(){
+  let a1 = "/static/audio/mixkit-correct-answer-tone-2870.wav";
+  let a2 = "/static/audio/mixkit-positive-notification-951.wav";
+  let audio = new Audio(a2);
+  audio.play()    
+}
