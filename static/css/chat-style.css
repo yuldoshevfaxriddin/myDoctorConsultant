@@ -316,7 +316,7 @@
   /* navbar */
   .navbar{
     background-color: grey;
-    width: 300px;
+    width: 330px;
     margin: 0px;
     height:calc(100% - 50px);
     overflow-y: hidden;

@@ -69,10 +69,22 @@ def news():
 def contact():
     return  render_template('contact.html')
 
-@app.route('/doctors')
+@app.route('/doctors',methods=['GET','POST'])
 def doctors():
-    doctors = chat_db.getDoctors()
-    return  render_template('doctors.html',doctors=doctors)
+    regions = chat_db.getRegions()
+    mutaxasislik = chat_db.getMutaxaslik()
+    doctors = None
+    if request.method == 'POST':
+        region_id = request.form.get('region',None)
+        m_id = request.form.get('mutaxasislik',None)
+        t1 = (region_id == None) and (m_id == None) # ikkalasi ham kiritilmasa 
+        t2 = (region_id != None) and (m_id == None) # m_id kiritilmasa
+        t3 = (region_id == None) and (m_id != None) # region kiritilmasa
+        t4 = (region_id != None) and (m_id != None) # ikkalasi ham kiritsa
+        doctors = chat_db.getDoctorsFilter(t1=t1,t2=t2,t3=t3,t4=t4,r_id=region_id,m_id=m_id)
+    else:
+        doctors = chat_db.getDoctors()
+    return  render_template('doctors.html',doctors=doctors,regions=regions,mutaxasislik=mutaxasislik)
 
 @app.route('/doctor/<doctor_id>')
 def doctorProfile(doctor_id):
@@ -190,6 +202,8 @@ def messagePage_2(id):
         session['nextUrl'] = url_for('messagePage_2',id=id)
         return redirect(url_for('login'))
     user = session['user']
+    if str(user['id']) == str(id):
+        return redirect(url_for('messagePage'))
     users = chat_db.getPersonalChats(user)
     doctor = None
     if id :

@@ -3,7 +3,7 @@ const msgerForm = get(".msger-inputarea");
 const msgerInput = get(".msger-input");
 const msgerChat = get(".msger-chat");
 const configButton = get(".msger-header-options");
-const searchButton = get(".msger-header-options-2");
+// const searchButton = get(".msger-header-options-2");
 const activeUserChat = get(".user-chat-info");
 const mainUser = get(".user-info");
 const usersList = get(".users-list");
@@ -71,18 +71,18 @@ configButton.addEventListener("click",() =>{
 
 });
 
-searchButton.addEventListener("click",() =>{
-  if(nextSearchButton === true){
-    searchButton.classList.add("active-button");
-    get(".search-button").style.display= "block";
-    searchInput.focus();
-  }
-  else{
-    searchButton.classList.remove("active-button");
-    get(".search-button").style.display= "none";
-  }
-  nextSearchButton = ! nextSearchButton;
-});
+// searchButton.addEventListener("click",() =>{
+//   if(nextSearchButton === true){
+//     searchButton.classList.add("active-button");
+//     get(".search-button").style.display= "block";
+//     searchInput.focus();
+//   }
+//   else{
+//     searchButton.classList.remove("active-button");
+//     get(".search-button").style.display= "none";
+//   }
+//   nextSearchButton = ! nextSearchButton;
+// });
 
 function appendMessage(name, img, side, text, time) {
   // var date = formatDate(new Date());
@@ -138,6 +138,8 @@ function selectUser(id){
   if(id==active_chat_id.value){
     return 
   }
+  let a = document.getElementById(id);
+  a.children[0].children[1].style.display = 'none';
   deleteMsgerChat();
   setUserChat(id);
   var user_1 = active_chat_id.value;
@@ -239,8 +241,9 @@ function appendUsersList(data){
 function setTestUser(id,name,bio,img){
   const userHTML = `
     <div class="user-chat"  id="${id}" onclick="selectUser('${id}')">
-            <div class="user-img">
+            <div class="user-img" style="position:relative">
               <img src="${img}"alt="">
+              <span style="width:10px;height:10px;border-radius:50%;background-color:green;display:none;position:absolute;bottom:0px;" ></span>
             </div>
             <div class="user-name">
               <h3>${name} </h3>
@@ -259,5 +262,5 @@ function playNotification(){
   let a1 = "/static/audio/mixkit-correct-answer-tone-2870.wav";
   let a2 = "/static/audio/mixkit-positive-notification-951.wav";
   let audio = new Audio(a2);
-  audio.play()    
+  audio.play();    
 }

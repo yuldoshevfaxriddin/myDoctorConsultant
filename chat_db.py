@@ -2,7 +2,11 @@ import mysql.connector as mysql
 import settings
 import datetime
 global conn
-conn = mysql.connect(host=settings.DB_HOSTNAME,user=settings.DB_USERNAME,password=settings.DB_PASSWORD,database=settings.DB_NAME)
+try:
+    conn = mysql.connect(host=settings.DB_HOSTNAME,user=settings.DB_USERNAME,password=settings.DB_PASSWORD,database=settings.DB_NAME)
+    print("data base connection mavjud")
+except mysql.connector.Error as err:
+    print(f"Error(xatolik): {err}")
 
 def showTables():
     cursor = conn.cursor()
@@ -265,6 +269,39 @@ def getDoctors():
     cursor = conn.cursor()
     key = 'doctor'
     sql = f"SELECT * FROM users WHERE `user_role`='{key}'"
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    cursor.close()
+    return myresult
+def getDoctorsFilter(t1,t2,t3,t4,r_id,m_id):
+    cursor = conn.cursor()
+    print(t1,t2,t3,t4,r_id,m_id)
+    sql = 'SELECT * FROM users '
+    if t1:
+        sql = "SELECT * FROM users WHERE user_role = 'doctor'"
+    if t2:
+        sql = f"""
+        SELECT users.id,users.name,users.username,users.password,users.user_image,users.user_bio,regions.name
+        FROM user_to_region 
+        INNER JOIN users ON users.id = user_to_region.user_id
+        INNER JOIN regions ON user_to_region.region_id = regions.id
+        WHERE user_to_region.region_id = {r_id} """
+    if t3:
+        sql = f"""
+        SELECT users.id,users.name,users.username,users.password,users.user_image,users.user_bio,regions.name
+		FROM user_to_region
+        INNER JOIN users ON user_to_region.user_id = users.id 
+        INNER JOIN regions ON user_to_region.region_id = regions.id
+        INNER JOIN user_to_mutaxasislik ON user_to_mutaxasislik.user_id = users.id 
+        WHERE user_to_mutaxasislik.mutaxasislik_id = {m_id}"""
+    if t4:
+        sql = f"""
+        SELECT users.id,users.name,users.username,users.password,users.user_image,users.user_bio,regions.name
+		FROM user_to_region
+        INNER JOIN users ON user_to_region.user_id = users.id 
+        INNER JOIN regions ON user_to_region.region_id = regions.id
+        INNER JOIN user_to_mutaxasislik ON user_to_mutaxasislik.user_id = users.id 
+        WHERE user_to_region.region_id = {r_id} AND user_to_mutaxasislik.mutaxasislik_id = {m_id} """
     cursor.execute(sql)
     myresult = cursor.fetchall()
     cursor.close()

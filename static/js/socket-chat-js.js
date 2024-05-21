@@ -19,21 +19,23 @@ socket.on('sendMessage', (message) => {
     var user_id_2 = data['user_id_1']; // current user
     var text = data['text'];
     var time = new Date(1000 * data['time'])
-    console.log(user_id_1 != active_user);
-    if(user_id_1 != active_user){
-        playNotification();
+    if(userId.value==user_id_1){
+        return ;
     }
     if(document.getElementById(user_id_1) == null){
-        console.log("if ishladi socketdagi");
-        console.log(data);
         appendUsersList(data);
-        // user yoq uni yaratish kerak
     }else{
         if(active_user == user_id_1){
             var name = document.getElementById(user_id_1).children[1].children[0].textContent; //chatni egasi
             var image = document.getElementById(user_id_1).children[0].children[0].src; // chatni egasi
             appendMessage(name, image, "left", text,time); 
         }
+    }
+    if(user_id_1 != active_user){
+        let a = document.getElementById(user_id_1);
+        a.children[0].children[1].style.display = 'block';
+        playNotification();
+        console.log('play sound');
     }
     console.log("ok ");  
 
