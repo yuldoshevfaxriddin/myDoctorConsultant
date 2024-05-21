@@ -144,24 +144,29 @@ def login():
         print('not login')
     return render_template('login.html')
 
-@app.route('/register',methods=['GET','POST'])
-def register():
+@app.route('/register-user',methods=['GET','POST'])
+def registerUser():
     if 'user' in session:
         return redirect(url_for('home'))
     if request.method =='POST':
         name = request.form.get('name')
         username = request.form.get('username')
         password = request.form.get('password')
+        password_confirm = request.form.get('password_confirm')
         check_user = chat_db.checkUser(username,password)
+        if password != password_confirm:
+            error = 'Parolar xar hil'
+            return  render_template('register_user.html',error=error)
         if len(check_user) != 0:
-            error = 'username bor'
-            return  render_template('register.html',error=error)
+            error = 'Foydalanuvchi nomi mavjud'
+            return  render_template('register_user.html',error=error)
         user = {
             'name':name,
             'username':username,
             'password':password,
             'user_bio':'Tizim foydalanuvchisi',
-            'user_image':'images/default-person.png'
+            'user_image':'images/default-person.png',
+            'user_role':'bemor'
         }
         user['id'] = chat_db.createUser(user)
         print(user)
@@ -169,7 +174,45 @@ def register():
         session['user'] = user
         # users = chat_db.getAllUsers()
         return redirect(url_for('home'))
-    return  render_template('register.html')
+    return  render_template('register_user.html')
+@app.route('/register-doctor',methods=['GET','POST'])
+def registerDoctor():
+    regions = chat_db.getRegions()
+    m = chat_db.getMutaxaslik()
+
+    if 'user' in session:
+        return redirect(url_for('home'))
+    if request.method =='POST':
+        name = request.form.get('name')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        password_confirm = request.form.get('password_confirm')
+        region_id = request.form.get('region')
+        mut_id = request.form.get('mut')
+        if password != password_confirm:
+            error = 'Parollar xar hil'
+            return  render_template('register_doctor.html',error=error,regions=regions,mut=m)
+        check_user = chat_db.checkUser(username,password)
+        if len(check_user) != 0:
+            error = 'Foydalanuvchi nomi mavjud'
+            return  render_template('register_doctor.html',error=error,regions=regions,mut=m)
+        user = {
+            'name':name,
+            'username':username,
+            'password':password,
+            'user_bio':'Tizim foydalanuvchisi',
+            'user_image':'images/default-person.png',
+            'user_role':'doctor'
+        }
+        user['id'] = chat_db.createUser(user)
+        chat_db.insertRegionUser(user['id'],region_id)
+        chat_db.insertMutaxasislik(user['id'],mut_id)
+        print(user)
+        print('register  succes !')
+        session['user'] = user
+        # users = chat_db.getAllUsers()
+        return redirect(url_for('home'))
+    return  render_template('register_doctor.html',regions=regions,mut=m)
 
 @app.route('/logout')
 def logout():

@@ -414,6 +414,14 @@ def dbSeeder():
             'user_role':'doctor',
             'user_image':'images/nasiba.png'
         }
+    doctor3 = {
+            'name':'Axmedov Maxmudjon',
+            'username':'3dmax',
+            'password':'3dmax',
+            'user_bio':'Oliy malumotli shifokor, Nevrolog',
+            'user_role':'doctor',
+            'user_image':'images/nasiba.png'
+        }
     createUser(user1)
     createUser(user2)
     createUser(doctor1)
@@ -423,11 +431,14 @@ def dbSeeder():
     insertRegionUser(3,2)
     insertRegionUser(4,2)
     insertRegionUser(5,4)
+    insertRegionUser(6,5)
 
     insertMutaxasislik(3,1)
     insertMutaxasislik(3,2)
     insertMutaxasislik(4,3)
     insertMutaxasislik(5,4)
+    insertMutaxasislik(6,5)
+    insertMutaxasislik(6,4)
 
     print('seeder succes !')
 
