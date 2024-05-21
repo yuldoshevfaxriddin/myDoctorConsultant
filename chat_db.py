@@ -47,6 +47,28 @@ def createTables():
         user_2 VARCHAR(255),
         created_at VARCHAR(255)
         ); """)
+    cursor.execute(""" CREATE TABLE regions (
+        id INT AUTO_INCREMENT PRIMARY KEY, 
+        name VARCHAR(255),
+        created_at VARCHAR(255)
+        ); """)
+    cursor.execute(""" CREATE TABLE user_to_region (
+        id INT AUTO_INCREMENT PRIMARY KEY, 
+        user_id VARCHAR(255),
+        region_id VARCHAR(255),
+        created_at VARCHAR(255)
+        ); """)
+    cursor.execute(""" CREATE TABLE user_to_mutaxasislik (
+        id INT AUTO_INCREMENT PRIMARY KEY, 
+        user_id VARCHAR(255),
+        mutaxasislik_id VARCHAR(255),
+        created_at VARCHAR(255)
+        ); """)
+    cursor.execute(""" CREATE TABLE mutaxasislik (
+        id INT AUTO_INCREMENT PRIMARY KEY, 
+        name VARCHAR(255),
+        created_at VARCHAR(255)
+        ); """)
     cursor.execute(""" CREATE TABLE chat (
         id INT AUTO_INCREMENT PRIMARY KEY,
         chat_name VARCHAR(255),
@@ -104,6 +126,22 @@ def createChat(chat_name):
     cursor = conn.cursor()
     sql = f"""INSERT INTO chat ( `chat_name`, `created_at`) 
         VALUES ('{chat_name}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
+    cursor.execute(sql)
+    cursor.close()
+    conn.commit()
+    return cursor.lastrowid
+def createRegion(region_name):
+    cursor = conn.cursor()
+    sql = f"""INSERT INTO regions ( `name`, `created_at`) 
+        VALUES ('{region_name}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
+    cursor.execute(sql)
+    cursor.close()
+    conn.commit()
+    return cursor.lastrowid
+def createMutaxasislik(mutaxasislik):
+    cursor = conn.cursor()
+    sql = f"""INSERT INTO mutaxasislik ( `name`, `created_at`) 
+        VALUES ('{mutaxasislik}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
     cursor.execute(sql)
     cursor.close()
     conn.commit()
@@ -231,6 +269,20 @@ def getDoctors():
     myresult = cursor.fetchall()
     cursor.close()
     return myresult
+def getRegions():
+    cursor = conn.cursor()
+    sql = f"SELECT * FROM regions WHERE 1"
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    cursor.close()
+    return myresult
+def getMutaxaslik():
+    cursor = conn.cursor()
+    sql = f"SELECT * FROM mutaxasislik WHERE 1"
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    cursor.close()
+    return myresult
 
 def insertPersonalMessage(p_chat_id,user_id,message):
     cursor = conn.cursor()
@@ -239,12 +291,34 @@ def insertPersonalMessage(p_chat_id,user_id,message):
     cursor.execute(sql)
     cursor.close()
     conn.commit()
+def insertRegionUser(user_id,region_id):
+    cursor = conn.cursor()
+    sql = f"""INSERT INTO user_to_region ( `user_id`, `region_id`, `created_at`) 
+        VALUES ('{user_id}','{region_id}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
+    cursor.execute(sql)
+    cursor.close()
+    conn.commit()
+    return cursor.lastrowid
+def insertMutaxasislik(user_id,mutaxasislik_id):
+    cursor = conn.cursor()
+    sql = f"""INSERT INTO user_to_mutaxasislik ( `user_id`, `mutaxasislik_id`, `created_at`) 
+        VALUES ('{user_id}','{mutaxasislik_id}','{datetime.datetime.timestamp(datetime.datetime.now())}')"""
+    cursor.execute(sql)
+    cursor.close()
+    conn.commit()
+    return cursor.lastrowid
 
 def dbSeeder():
     # createTables()
     chat_names = ['global','toshkent','xorazm','surxondaryo']
+    regions = ['Toshkent shahar','Xorazm  viloyati','Surxondaryo  viloyati','Sirdaryo  viloyati','Andijon  viloyati','Buxoro  viloyati','Fargona  viloyati','Jizzax  viloyati','Namangan  viloyati','Novoiy  viloyati','Samarqand  viloyati','Toshkent  viloyati','Qashqadaryo  viloyati','Qoraqalpogiston Respublikasi']
+    mutaxasislik = ['lor','stamatolog','jarroh','kardiolog','narkolog','nevrolog','immunolog']
     for chat_name in chat_names:
         createChat(chat_name)
+    for region in regions:
+        createRegion(region)
+    for m in mutaxasislik:
+        createMutaxasislik(m)
     user1 = {
             'name':'Asadbek Bobojovov',
             'username':'asadbek123',
@@ -290,12 +364,22 @@ def dbSeeder():
     createUser(doctor1)
     createUser(doctor2)
     createUser(doctor3)
+
+    insertRegionUser(3,2)
+    insertRegionUser(4,2)
+    insertRegionUser(5,4)
+
+    insertMutaxasislik(3,1)
+    insertMutaxasislik(3,2)
+    insertMutaxasislik(4,3)
+    insertMutaxasislik(5,4)
+
     print('seeder succes !')
 
 
 if __name__=='__main__':
 
-    showTables()
+    # showTables()
     # dropTables()
     # createTables()
     # dbSeeder()
