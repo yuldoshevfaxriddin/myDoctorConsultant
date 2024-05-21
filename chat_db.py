@@ -268,17 +268,22 @@ def getPersonalChatsMessages(p_chat_id):
 def getDoctors():
     cursor = conn.cursor()
     key = 'doctor'
-    sql = f"SELECT * FROM users WHERE `user_role`='{key}'"
+    sql = f"SELECT id,name,username,password,user_image,user_bio,user_role FROM users WHERE `user_role`='{key}'"
     cursor.execute(sql)
+    new_respons = []
     myresult = cursor.fetchall()
+    for index in range(len(myresult)):
+        temp = list(myresult[index])
+        temp.append(getMutaxaslikByUserId(myresult[index][0]))
+        new_respons.append(temp)
     cursor.close()
-    return myresult
+    return new_respons
 def getDoctorsFilter(t1,t2,t3,t4,r_id,m_id):
     cursor = conn.cursor()
     print(t1,t2,t3,t4,r_id,m_id)
-    sql = 'SELECT * FROM users '
+    sql = f"SELECT id,name,username,password,user_image,user_bio,user_role FROM users WHERE `user_role`='doctor'"
     if t1:
-        sql = "SELECT * FROM users WHERE user_role = 'doctor'"
+        sql = f"SELECT id,name,username,password,user_image,user_bio,user_role FROM users WHERE `user_role`='doctor'"
     if t2:
         sql = f"""
         SELECT users.id,users.name,users.username,users.password,users.user_image,users.user_bio,regions.name
@@ -304,8 +309,14 @@ def getDoctorsFilter(t1,t2,t3,t4,r_id,m_id):
         WHERE user_to_region.region_id = {r_id} AND user_to_mutaxasislik.mutaxasislik_id = {m_id} """
     cursor.execute(sql)
     myresult = cursor.fetchall()
+    new_respons = []
+    for index in range(len(myresult)):
+        temp = list(myresult[index])
+        temp.append(getMutaxaslikByUserId(myresult[index][0]))
+        new_respons.append(temp)
+        print(temp)
     cursor.close()
-    return myresult
+    return new_respons
 def getRegions():
     cursor = conn.cursor()
     sql = f"SELECT * FROM regions WHERE 1"
@@ -316,6 +327,13 @@ def getRegions():
 def getMutaxaslik():
     cursor = conn.cursor()
     sql = f"SELECT * FROM mutaxasislik WHERE 1"
+    cursor.execute(sql)
+    myresult = cursor.fetchall()
+    cursor.close()
+    return myresult
+def getMutaxaslikByUserId(user_id):
+    cursor = conn.cursor()
+    sql = f"SELECT * FROM user_to_mutaxasislik INNER JOIN mutaxasislik ON user_to_mutaxasislik.mutaxasislik_id = mutaxasislik.id WHERE user_id = '{user_id}'"
     cursor.execute(sql)
     myresult = cursor.fetchall()
     cursor.close()
