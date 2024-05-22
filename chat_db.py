@@ -113,9 +113,6 @@ def createUser(user:dict):
     cursor.execute(sql_1)
     cursor.close()
     last_user_id = cursor.lastrowid
-    # sql_2 = f"""INSERT INTO sessions ( `user_id`, `request_session`) 
-    #     VALUES ('{last_user_id}','{user['request_session']}')"""
-    # cursor.execute(sql_2)
     conn.commit()
     return last_user_id
 def createPersonalChat(user_id_1,user_id_2):

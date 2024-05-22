@@ -1,0 +1,166 @@
+<!-- chat-page -->
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>chat app</title>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat-style.css') }}">
+
+</head>
+<body>
+
+<!-- users list begin -->
+
+<nav class="navbar">
+    <header class="msger-header">
+      <div class="user-info">
+        <div class="user-img">
+          <!-- <img src="{{ url_for('static', filename=current_user['user_image']) }}" alt="rasm topilmadi"> -->
+          <img src="/static/{{current_user['user_image']}}" alt="rasm topilmadi">
+        </div>
+        <div class="user-name">
+          <h3>{{current_user['name']}} </h3>
+          <p>{{current_user['user_bio']}} </p>
+          <input type="hidden" id="user_id" value="{{current_user['id']}}">
+        </div>
+      </div>
+
+      <!-- <div class="msger-header-options-2" >
+        <span><i class="fa fa-search"></i></span>
+        <div class="search-button">
+          <input type="text" name="search-button" id="search-button">
+        </div>
+      </div> -->
+    </header>
+    <!-- userlar royhati -->
+    <div class="navbar-users">
+      <div class="users-list">
+        {%for user in users%}
+          {% if user[0] != current_user['id'] %}
+          <div class="user-chat"  id="{{user[0]}}" onclick="selectUser('{{user[0]}}')">
+            <div class="user-img" style="position:relative">
+              <img  src="{{ url_for('static', filename=user[4]) }}"alt="">
+              <span style="width:10px;height:10px;border-radius:50%;background-color:green;display:none;position:absolute;bottom:0px;" ></span>
+            </div>
+            <div class="user-name">
+              <h3>{{user[1]}} </h3>
+              <p>{{user[5]}}</p>
+            </div>
+          </div>
+          {%endif%}
+        {%endfor%}
+        
+      </div>
+    </div>
+    <!-- <footer>
+      <div class="footer">&copy; Y.F</div>
+    </footer> -->
+  </nav>
+  
+
+<!-- users list end -->
+
+<!-- partial:index.partial.html -->
+<section class="msger">
+  <header class="msger-header">
+    <div class="msger-header-title">
+      <i class="fas fa-comment-alt"></i> 
+    </div>
+
+    <div class="user-chat-info">
+      <div class="user-img">
+        <img >
+        <!-- <img src="" alt=""> -->
+      </div>
+      <div class="user-name"><h3></h3>
+      <p></p>
+      <input type="hidden" id="chat_id" value="chat_id">
+
+    </div>
+    </div>
+
+    
+    <div class="msger-header-options">
+      <span><i class="fas fa-cog"></i></span>
+      <div class="config-button" >
+        <a href="/profile">profile</a>
+        <a href="/logout">login out</a>
+      </div>
+    </div>
+    
+  </header>
+  {% if status%}
+    <div class="succes">{{status}}
+      </div>
+  {%endif%}
+  <main class="msger-chat">
+    <!-- <div class="msg left-msg">
+      <div
+       class="msg-img"
+       style="background-image: url(https://image.flaticon.com/icons/svg/327/327779.svg)"
+      ></div>
+
+      <div class="msg-bubble">
+        <div class="msg-info">
+          <div class="msg-info-name">BOT</div>
+          <div class="msg-info-time">12:45</div>
+        </div>
+
+        <div class="msg-text">
+          Hi, welcome to SimpleChat! Go ahead and send me a message. 😄
+        </div>
+      </div>
+    </div>
+
+    <div class="msg right-msg">
+      <div
+       class="msg-img"
+       style="background-image: url(https://image.flaticon.com/icons/svg/145/145867.svg)"
+      ></div>
+
+      <div class="msg-bubble">
+        <div class="msg-info">
+          <div class="msg-info-name">Sajad</div>
+          <div class="msg-info-time">12:46</div>
+        </div>
+
+        <div class="msg-text">
+          You can change your name in JS section!
+        </div>
+      </div>
+    </div> -->
+  </main>
+
+  <form class="msger-inputarea">
+    <input type="text" tabindex="1" class="msger-input" placeholder="Habarni kiriting...">
+    <button type="submit" class="msger-send-btn">Jo'natish</button>
+  </form>
+</section>
+<!-- partial -->
+
+
+  <script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
+  <script src="{{ url_for('static', filename='js/chat-js.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/js.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/socket-chat-js.js') }}"></script>
+
+  {% if client_doctor %}
+  <script>
+    if(document.getElementById("{{client_doctor[0]}}") == null){
+      setTestUser("{{client_doctor[0]}}","{{client_doctor[1]}}","{{client_doctor[5]}}","{{ url_for('static',filename=client_doctor[4])}}");
+      selectUser("{{client_doctor[0]}}");
+    }
+    else{
+      selectUser("{{client_doctor[0]}}");
+    }
+  </script>
+  {% endif %}
+
+</body>
+</html>

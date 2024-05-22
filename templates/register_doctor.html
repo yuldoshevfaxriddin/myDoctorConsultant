@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register page</title>
+    <script src="{{ url_for('static', filename='js/bootstrapt.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrapt.css') }}">
+   
+</head>
+<body>
+    <p>{{error}}</p>
+    <div class="container mb-6" style="margin-top:5% ;">
+        <form action="{{url_for('registerDoctor')}}" method="post">
+           
+            <div class="mb-3">
+                <label for="name" class="form-label">Ism Familya</label>
+                <input type="text" class="form-control" id="name"name="name" placeholder="Ism Familya">
+            </div>
+           
+            <div class="mb-3">
+                <label for="username" class="form-label">Foydalanuvchi nomi</label>
+                <input type="text" class="form-control" id="username"name="username" placeholder="Foydalanuvchi nomi">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Parol</label>
+                <input type="password" class="form-control" id="password"name="password" placeholder="Parol">
+            </div>
+            <div class="mb-3">
+                <label for="password_confirm" class="form-label">Parolni tasdiqlash</label>
+                <input type="password" class="form-control" id="password_confirm"name="password_confirm" placeholder="Parolni tasdiqlash">
+            </div>
+            <div class="mb-3">
+                <select name="region" id="region" class="form-select">
+                    <option disabled selected>Hudud</option>
+                    {% for r in regions %}
+                        <option value="{{r[0]}}">{{r[1]}}</option>
+                    {% endfor %}
+                </select>
+                <select name="mut" id="mut" class="form-select">
+                    <option disabled selected>Mutaxasislik</option>
+                    {% for m in mut %}
+                        <option value="{{m[0]}}">{{m[1]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" class="btn btn-success" value="Royhatdan o'tish">
+        </form>        
+      
+    </div>
+</body>
+</html>
